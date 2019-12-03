@@ -9,7 +9,7 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.0"
+    "nodemon": "^2.0.1"
   },
   "scripts": {
     "start": "npx nodemon main.js"
