@@ -127,13 +127,20 @@ class myExpress{
       })
     }
 
-    /*all(path, callback){
+    yes(){
+      console.log('ta mère')
+    }
+
+    all(path, callback){
       this.app.on('request', (req, res) => {
         const {pathname, query} = url.parse(req.url, true)
+        const getID = pathname.split('/')
+        const studentID = getID[2]
         //GET
         if (pathname === '/' && req.method === 'GET'){
           //this.get(path, callback)
-          console.log('GET')
+          this.yes()
+          // console.log('GET')
         }
         //POST
         else if (pathname === '/students' && req.method === 'POST'){
@@ -141,18 +148,18 @@ class myExpress{
           console.log('POST')
         }
         //PUT
-        else if (pathname === '/students/' && req.method === 'PUT'){
+        else if  (pathname === `/students/${studentID}` && req.method === 'PUT'){
           // this.put(path, callback)
           console.log('PUT')
         }
         //DELETE
-        else if (pathname === '/students/' && req.method === 'DELETE'){
-          // this.delete(path, callback)
+        else if  (pathname === `/students/${studentID}` && req.method === 'DELETE'){
+          this.delete(path, callback)
           console.log('DELETE')
         }
         res.end()
       })
-    }*/
+    }
 
     // render(){
     //     console.log('render')
