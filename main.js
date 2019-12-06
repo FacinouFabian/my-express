@@ -17,8 +17,12 @@ const app = express()
 //     res.write('DELETE request to homepage')
 // })
 
-app.all('/*', function (req, res) {
-      res.write('Request ALL to homepage')
+// app.all('/*', function (req, res) {
+//      res.write('Request ALL to homepage')
+// })
+
+app.render('home', { name: 'Ch0pper' }, (err, html) => {
+      // ...
 })
 
 app.listen(4242)
