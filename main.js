@@ -25,7 +25,7 @@ const app = express()
 //       // ...
 // })
 
-app.render('home-advanced', { name: 'Ch0pper', weight: 33.1337 }, (err, html) => {
+app.render('home', { name: 'Ch0pper', weight: 33.1337 }, (err, html) => {
       // ...
 })
 

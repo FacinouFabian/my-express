@@ -171,33 +171,22 @@ class myExpress {
     if (fs.existsSync(`./${fileName}.mustache`)) {
       fileName = `${fileName}.mustache`
 
-      let content = fs.readFileSync(fileName, 'utf-8');
-      
-      if (content !=='') {
+      let content = fs.readFileSync(fileName, 'utf-8')
+
+      if (content !== '') {
         const cbLength = Object.keys(callback).length
-        let modifiedContent = []
 
         callback = pipeManager(content, callback)
 
         if (cbLength > 1) {
           for (let i = 0; i < cbLength; i++) {
-            const [cbKey, cbValue] = Object.entries(callback)[i]
-
-            for (let line of content.split('\n')) {
-              const regex = new RegExp(`{{${cbKey}[\\s\\w\\|\\:]*}}`, 'gm')
-              modifiedContent.push(line.replace(regex, cbValue))
-            }
+            content = replaceOptions(content, callback, i)
           }
         } else if (cbLength === 1) {
-          const [cbKey, cbValue] = Object.entries(callback)[0]
-
-          for (let line of content.split('\n')) {
-            const regex = `/{{${cbKey}[\\s\\w\\|\\:]*}}/gm`
-            modifiedContent.push(line.replace(regex, cbValue))
-          }
+          content = replaceOptions(content, callback)
         }
 
-        !fs.writeFileSync(`${fileName}`, modifiedContent)
+        !fs.writeFileSync(`${fileName}`, content)
           ? console.log(`${fileName} was created !`)
           : console.log(`Error to creat ${fileName} file...`)
       } else {
@@ -205,6 +194,15 @@ class myExpress {
       }
     }
   }
+}
+
+function replaceOptions(content, callback, i = 0) {
+  const [cbKey, cbValue] = Object.entries(callback)[i]
+  const regex = new RegExp(`{{${cbKey}[\\s\\w\\|\\:]*}}`, 'gm')
+
+  content = content.replace(regex, cbValue)
+
+  return content
 }
 
 function pipeManager(data, callback) {
