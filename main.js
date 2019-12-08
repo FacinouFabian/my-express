@@ -17,8 +17,10 @@ const app = express()
 //     res.write('DELETE request to homepage')
 // })
 
-// app.all('/*', function (req, res) {
-//      res.write('Request ALL to homepage')
+/// ALL /// **BUG..il faut actualiser la page au moins 2 fois pour que cela fonctionne**
+// app.all('/', function (req, res) {
+//   res.write('New request to homepage!' + '\n')
+//   res.write(req.method)
 // })
 
 // app.render('home', { name: 'Ch0pper' }, (err, html) => {
@@ -30,7 +32,3 @@ app.render('home', { name: 'Ch0pper', weight: 33.1337 }, (err, html) => {
 })
 
 app.listen(4242)
-
-
-
-// app.render()
