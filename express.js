@@ -50,7 +50,11 @@ class myExpress {
               data = [user]
             } else {
               const json = require(`./${local_database}`)
-              user.id = json.length + 1
+              let users_id = [];
+              json.forEach(user => {
+                users_id.push(user.id);
+              });
+              user.id = json.length > 0 ? Math.max.apply(null, users_id) + 1 : 1;
               json.push(user)
               data = json
             }
@@ -166,21 +170,27 @@ class myExpress {
   render(fileName, callback) {
     if (fs.existsSync(`./${fileName}.mustache`)) {
       fileName = `${fileName}.mustache`
-      const outputFileName = `copy.${fileName}`;
 
-      let rstream = fs.createReadStream(fileName);
-      let wstream = fs.createWriteStream(outputFileName);
+      const content = fs.readFileSync(fileName, 'utf-8');
+      const cbLength = Object.keys(callback).length
+      const modifiedContent = []
 
-      const tstream = new Transform({
-        transform(chunk, encoding, cb) {
-          const obj = Object.entries(callback)
-          const [objKey, objVal] = obj[0];
-          this.push(chunk.toString().replace(`{{${objKey}}}`, objVal));
-          cb();
+      if (cbLength > 1) {
+        // ...
+      } else if (cbLength === 1) {
+        const cbKey = Object.keys(callback)
+        const cbValue = Object.values(callback)
+        
+        for(const line of content.split('\n')) {
+          modifiedContent.push(line.replace(`{{${cbKey[0]}}}`, cbValue[0]))
         }
-      });
-      rstream.pipe(tstream).pipe(wstream);
-      console.log(`File ${outputFileName} successfully rendered!`);
+      }
+
+      !fs.writeFileSync(`${fileName}`, modifiedContent.join('\n'))
+        ? console.log(`${fileName} was created !`)
+        : console.log(`Error to creat ${fileName} file...`)
+
+
     }
   }
 }
