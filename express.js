@@ -171,28 +171,66 @@ class myExpress {
     if (fs.existsSync(`./${fileName}.mustache`)) {
       fileName = `${fileName}.mustache`
 
-      const content = fs.readFileSync(fileName, 'utf-8');
-      const cbLength = Object.keys(callback).length
-      const modifiedContent = []
+      let content = fs.readFileSync(fileName, 'utf-8');
+      
+      if (content !=='') {
+        const cbLength = Object.keys(callback).length
+        let modifiedContent = []
 
-      if (cbLength > 1) {
-        // ...
-      } else if (cbLength === 1) {
-        const cbKey = Object.keys(callback)
-        const cbValue = Object.values(callback)
-        
-        for(const line of content.split('\n')) {
-          modifiedContent.push(line.replace(`{{${cbKey[0]}}}`, cbValue[0]))
+        callback = pipeManager(content, callback)
+
+        if (cbLength > 1) {
+          for (let i = 0; i < cbLength; i++) {
+            const [cbKey, cbValue] = Object.entries(callback)[i]
+
+            for (let line of content.split('\n')) {
+              const regex = new RegExp(`{{${cbKey}[\\s\\w\\|\\:]*}}`, 'gm')
+              modifiedContent.push(line.replace(regex, cbValue))
+            }
+          }
+        } else if (cbLength === 1) {
+          const [cbKey, cbValue] = Object.entries(callback)[0]
+
+          for (let line of content.split('\n')) {
+            const regex = `/{{${cbKey}[\\s\\w\\|\\:]*}}/gm`
+            modifiedContent.push(line.replace(regex, cbValue))
+          }
         }
+
+        !fs.writeFileSync(`${fileName}`, modifiedContent)
+          ? console.log(`${fileName} was created !`)
+          : console.log(`Error to creat ${fileName} file...`)
+      } else {
+        console.log(`Error, empty ${fileName} file...`)
       }
-
-      !fs.writeFileSync(`${fileName}`, modifiedContent.join('\n'))
-        ? console.log(`${fileName} was created !`)
-        : console.log(`Error to creat ${fileName} file...`)
-
-
     }
   }
+}
+
+function pipeManager(data, callback) {
+  let filteredDatas = data.match(/{{(.*?)}}/gm)
+  const cbKeys = Object.keys(callback)
+
+  for (const cbKey of cbKeys) {
+    for (const filteredData of filteredDatas) {
+      if (filteredData.includes('|')) {
+        const optionDetails = filteredData.match(/\w+/g)
+        if (cbKey === optionDetails[0]) {
+          if (optionDetails[1] === 'upper') {
+            callback[cbKey] = callback[cbKey].toUpperCase()
+          }
+          if (optionDetails[1] === 'lower') {
+            callback[cbKey] = callback[cbKey].toLowerCase()
+          }
+          if (optionDetails[1] === 'fixed' && optionDetails[2]) {
+            callback[cbKey] = callback[cbKey].toFixed(optionDetails[2])
+          }
+        }
+      }
+    }
+  }
+
+  return callback
 }
 
 function express() {
