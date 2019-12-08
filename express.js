@@ -133,35 +133,29 @@ class myExpress {
     })
   }
 
-  all(path, callback) {
-    this.app.on('request', (req, res) => {
-      const { pathname, query } = url.parse(req.url, true)
-      const getID = pathname.split('/')
-      const studentID = getID[2]
-      //GET
-      if (pathname === '/' && req.method === 'GET') {
-        //this.get(path, callback)
-        this.yes()
-        // console.log('GET')
-      }
-      //POST
-      else if (pathname === '/students' && req.method === 'POST') {
-        // this.post(path, callback)
-        console.log('POST')
-      }
-      //PUT
-      else if (pathname === `/students/${studentID}` && req.method === 'PUT') {
-        // this.put(path, callback)
-        console.log('PUT')
-      }
-      //DELETE
-      else if (pathname === `/students/${studentID}` && req.method === 'DELETE') {
-        this.delete(path, callback)
-        console.log('DELETE')
-      }
-      res.end()
-    })
-  }
+    all(path, callback){
+      this.app.once('request', (req, res) => {
+        const {pathname, query} = url.parse(req.url, true)
+        const getID = pathname.split('/')
+        const studentID = getID[2]
+        if (path.match(/^\/.*/gi)){
+          // callback(req, res)
+          if (req.method === 'GET') {
+            console.log('New request to homepage !')
+            this.get(path, callback)
+          }else if (path === '/students' && req.method === 'POST') {
+            console.log('New request to homepage !')
+            this.post(path, callback)
+          }else if (pathname === `/students/${studentID}` && req.method === 'PUT') {
+            console.log('New request to homepage !')
+            this.put(path, callback)
+          }else if (pathname === `/students/${studentID}` && req.method === 'DELETE') {
+            console.log('New request to homepage !')
+            this.delete(path, callback)
+          }
+        }
+      })
+    }
 
   render(fileName, callback) {
     if (fs.existsSync(`./${fileName}.mustache`)) {
