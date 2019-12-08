@@ -1,8 +1,10 @@
 [
     {
-        "username": "Fabian",
+        "firstname": "Fabian",
+        "lastname": "Facinou"
     },
     {
-        "username": "Maxime"
+        "firstname": "maxime",
+        "lastname": "galissaire"
     }
 ]
