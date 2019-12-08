@@ -133,10 +133,6 @@ class myExpress {
     })
   }
 
-  yes() {
-    console.log('ta mère')
-  }
-
   all(path, callback) {
     this.app.on('request', (req, res) => {
       const { pathname, query } = url.parse(req.url, true)
